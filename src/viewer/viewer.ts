@@ -4,6 +4,8 @@ import axios from "axios";
 import parseJSON, { findThreeJSJSON } from "../utils/parse-json";
 import * as uuid from "uuid";
 import * as RX from "rxjs";
+import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
+import { createTextLabels } from "../utils/labels";
 
 CameraControls.install({ THREE });
 
@@ -15,6 +17,7 @@ class Viewer {
   public camera: THREE.PerspectiveCamera;
 
   private _renderer: THREE.WebGLRenderer;
+  private _css2dRenderer: CSS2DRenderer;
   private _cameraControl: CameraControls;
   private _renderNeeded = true;
   private _clock = new THREE.Clock();
@@ -46,6 +49,13 @@ class Viewer {
     this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     container.appendChild(this._renderer.domElement);
+
+    this._css2dRenderer = new CSS2DRenderer();
+    this._css2dRenderer.setSize(window.innerWidth, window.innerHeight);
+    this._css2dRenderer.domElement.style.position = "absolute";
+    this._css2dRenderer.domElement.style.top = "0px";
+    this._css2dRenderer.domElement.style.pointerEvents = "none"; // Need for mouse events to pass through
+    container.appendChild(this._css2dRenderer.domElement);
 
     this._cameraControl = new CameraControls(
       this.camera,
@@ -80,6 +90,7 @@ class Viewer {
         const boundingBox = new THREE.Box3().setFromObject(object3d);
         this._cameraControl.fitToBox(boundingBox, false);
         this.model = object3d;
+        createTextLabels(this.model);
         this.status.next("idle");
       }
     });
@@ -96,6 +107,7 @@ class Viewer {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this._renderer.setSize(window.innerWidth, window.innerHeight);
+    this._css2dRenderer.setSize(window.innerWidth, window.innerHeight);
     this._renderNeeded = true;
     this.updateViewer();
   };
@@ -106,6 +118,7 @@ class Viewer {
 
     if (hasControlsUpdated || this._renderNeeded) {
       this._renderer.render(this.scene, this.camera);
+      this._css2dRenderer.render(this.scene, this.camera);
       this._renderNeeded = false;
     }
 
@@ -176,6 +189,7 @@ class Viewer {
     window.removeEventListener("resize", this.resize);
     this._renderer.domElement.remove();
     this._renderer.dispose();
+    this._css2dRenderer.domElement.remove();
     this._cameraControl.dispose();
     this.scene.clear();
     this._renderNeeded = false;

@@ -19,8 +19,8 @@ const HierarchyComponent: React.FC = () => {
   );
 
   return (
-    <div>
-      <h3>Hierarchy</h3>
+    <div className="hierarchy-container">
+      <h3>Иерархия</h3>
       <ul>
         {status === "loading" && <li>Loading...</li>}
         {status === "idle" && viewer.model ? (
