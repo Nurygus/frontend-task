@@ -1,0 +1,37 @@
+.hierarchy-container {
+  min-height: 100vh;
+  width: 300px;
+  background-color: #00476e;
+  padding: 20px;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+.hierarchy-list-container {
+  list-style: none;
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.hierarchy-item {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+  font-size: 14px;
+  user-select: none;
+}
+
+.toggle-icon:hover {
+  background-color: #005f82;
+}
